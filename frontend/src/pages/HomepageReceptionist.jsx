@@ -539,21 +539,21 @@ const HomepageReceptionist = () => {
                               {patient.user_id?.full_name || 'Chưa có tên'}
                             </div>
                             <div className="text-xs text-gray-600">
-                              📞 SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}
+                              SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}
                             </div>
                             {patient.user_id?.dob && (
                               <div className="text-xs text-gray-600">
-                                🎂 Sinh: {formatDate(patient.user_id.dob)}
+                                Ngày sinh: {formatDate(patient.user_id.dob)}
                               </div>
                             )}
                             {patient.user_id?.gender && (
                               <div className="text-xs text-gray-600">
-                                👤 Giới tính: {patient.user_id.gender === 'male' ? 'Nam' : patient.user_id.gender === 'female' ? 'Nữ' : 'Khác'}
+                                Giới tính: {patient.user_id.gender === 'male' ? 'Nam' : patient.user_id.gender === 'female' ? 'Nữ' : 'Khác'}
                               </div>
                             )}
                             {patient.user_id?.address && (
                               <div className="text-xs text-gray-500 mt-1">
-                                📍 {patient.user_id.address}
+                                Địa chỉ: {patient.user_id.address}
                               </div>
                             )}
                           </div>
@@ -575,7 +575,6 @@ const HomepageReceptionist = () => {
                 
                 {searchPatient.trim() && searchResults.length === 0 && !isSearching && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy bệnh nhân</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -617,7 +616,6 @@ const HomepageReceptionist = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center">
-                    <span className="mr-2">📅</span>
                     Lịch hẹn hôm nay ({todayAppointments.length})
                   </span>
                   <Button 
@@ -634,9 +632,6 @@ const HomepageReceptionist = () => {
                 {error && (
                   <div className="mb-4 p-4 bg-red-50 border-2 border-red-300 rounded-lg">
                     <div className="flex items-start">
-                      <div className="flex-shrink-0">
-                        <span className="text-2xl">⚠️</span>
-                      </div>
                       <div className="ml-3 flex-1">
                         <h3 className="text-sm font-semibold text-red-800 mb-1">
                           Lỗi tải dữ liệu
@@ -665,7 +660,6 @@ const HomepageReceptionist = () => {
                   </div>
                 ) : todayAppointments.length === 0 && !error ? (
                   <div className="text-center py-8">
-                    <div className="text-4xl mb-3">📅</div>
                     <div className="text-gray-500">Không có lịch hẹn nào hôm nay</div>
                   </div>
                 ) : !error ? (
@@ -849,7 +843,6 @@ const HomepageReceptionist = () => {
                 </div>
               ) : selectedPrescription ? (
                 <div className="space-y-6">
-                  {/* Thông tin bệnh nhân và bác sĩ */}
                   <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
                     <div>
                       <h3 className="font-semibold text-gray-700 mb-2">Thông tin bệnh nhân:</h3>
@@ -874,20 +867,14 @@ const HomepageReceptionist = () => {
                       </p>
                     </div>
                   </div>
-
-                  {/* Chẩn đoán */}
                   <div className="bg-blue-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-700 mb-2">Chẩn đoán:</h3>
                     <p className="text-gray-800">{selectedPrescription.diagnosis}</p>
                   </div>
-
-                  {/* Điều trị */}
                   <div className="bg-green-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-700 mb-2">Phương pháp điều trị:</h3>
                     <p className="text-gray-800">{selectedPrescription.treatment}</p>
                   </div>
-
-                  {/* Danh sách thuốc */}
                   <div>
                     <h3 className="font-semibold text-gray-700 mb-3">Đơn thuốc:</h3>
                     {selectedPrescription.medications_prescribed?.length > 0 ? (
@@ -928,16 +915,12 @@ const HomepageReceptionist = () => {
                       <p className="text-gray-500 text-center py-4">Không có thuốc được kê đơn</p>
                     )}
                   </div>
-
-                  {/* Lời khuyên */}
                   {selectedPrescription.follow_up_recommendations && (
                     <div className="bg-yellow-50 p-4 rounded-lg">
                       <h3 className="font-semibold text-gray-700 mb-2">Khuyến nghị tái khám:</h3>
                       <p className="text-gray-800">{selectedPrescription.follow_up_recommendations}</p>
                     </div>
                   )}
-
-                  {/* Tổng chi phí */}
                   <div className="bg-purple-50 p-4 rounded-lg">
                     <div className="flex justify-between items-center">
                       <h3 className="font-semibold text-gray-700">Tổng chi phí:</h3>
@@ -946,8 +929,6 @@ const HomepageReceptionist = () => {
                       </p>
                     </div>
                   </div>
-
-                  {/* Trạng thái đơn thuốc */}
                   <div className="flex justify-between items-center">
                     <div>
                       <Badge className={
@@ -1000,7 +981,6 @@ const HomepageReceptionist = () => {
               </div>
 
               <div className="space-y-4">
-                {/* Thông tin bệnh nhân */}
                 <div className="bg-blue-50 p-4 rounded-lg">
                   <h3 className="font-semibold text-gray-700 mb-2">Thông tin bệnh nhân:</h3>
                   <p className="text-sm text-gray-600">
@@ -1016,8 +996,6 @@ const HomepageReceptionist = () => {
                     {selectedAppointmentForCheckIn.doctor_id?.specialty_id?.name || 'Chưa xác định'}
                   </p>
                 </div>
-
-                {/* Hiển thị giá khám */}
                 {selectedExaminationFee && (
                   <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
                     <div className="flex justify-between items-center">

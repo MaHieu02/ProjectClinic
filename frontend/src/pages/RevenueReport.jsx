@@ -386,7 +386,7 @@ const RevenueReport = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Thông tin bệnh nhân */}
                       <div className="space-y-2">
-                        <div className="font-semibold text-gray-900">👤 Bệnh nhân</div>
+                        <div className="font-semibold text-gray-900">Bệnh nhân</div>
                         <div className="text-sm space-y-1">
                           <div><span className="font-medium">Họ tên:</span> {appointment.patient_id?.user_id?.full_name || 'Chưa có'}</div>
                           <div><span className="font-medium">SĐT:</span> {appointment.patient_id?.user_id?.phone || 'Chưa có'}</div>
@@ -396,7 +396,7 @@ const RevenueReport = () => {
 
                       {/* Thông tin bác sĩ */}
                       <div className="space-y-2">
-                        <div className="font-semibold text-gray-900">👨‍⚕️ Bác sĩ</div>
+                        <div className="font-semibold text-gray-900">Bác sĩ</div>
                         <div className="text-sm space-y-1">
                           <div><span className="font-medium">Họ tên:</span> {appointment.doctor_id?.user_id?.full_name}</div>
                           <div><span className="font-medium">Chuyên khoa:</span> {appointment.doctor_id?.specialty_id?.name}</div>
@@ -405,7 +405,7 @@ const RevenueReport = () => {
 
                       {/* Thông tin dịch vụ khám */}
                       <div className="space-y-2">
-                        <div className="font-semibold text-gray-900">💊 Dịch vụ khám</div>
+                        <div className="font-semibold text-gray-900">Dịch vụ khám</div>
                         <div className="text-sm space-y-1">
                           <div><span className="font-medium">Loại:</span> {appointment.examination_type || appointment.examination_fee_id?.examination_type || 'Chưa xác định'}</div>
                           <div>
@@ -419,7 +419,7 @@ const RevenueReport = () => {
 
                       {/* Thông tin đơn thuốc */}
                       <div className="space-y-2">
-                        <div className="font-semibold text-gray-900">💉 Đơn thuốc</div>
+                        <div className="font-semibold text-gray-900">Đơn thuốc</div>
                         {appointment.medical_record_id && appointment.medical_record_id.medications_prescribed?.length > 0 ? (
                           <div className="text-sm space-y-1">
                             <div>
@@ -448,7 +448,7 @@ const RevenueReport = () => {
                                   disabled={loadingPrescription}
                                   className="text-xs"
                                 >
-                                  📋 Xem đơn thuốc
+                                  Xem đơn thuốc
                                 </Button>
                               </div>
                             )}
@@ -479,7 +479,7 @@ const RevenueReport = () => {
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">💊 Đơn thuốc</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Đơn thuốc</h2>
                 <button
                   onClick={() => setShowPrescriptionModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -518,20 +518,20 @@ const RevenueReport = () => {
 
                 {selectedPrescription.diagnosis && (
                   <div className="bg-yellow-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🔍 Chẩn đoán</div>
+                    <div className="text-sm text-gray-600 mb-2">Chẩn đoán</div>
                     <div className="font-medium">{selectedPrescription.diagnosis}</div>
                   </div>
                 )}
 
                 {selectedPrescription.symptoms && (
                   <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🤒 Triệu chứng</div>
+                    <div className="text-sm text-gray-600 mb-2">Triệu chứng</div>
                     <div className="font-medium">{selectedPrescription.symptoms}</div>
                   </div>
                 )}
 
                 <div>
-                  <h3 className="font-semibold text-lg mb-3">📋 Danh sách thuốc</h3>
+                  <h3 className="font-semibold text-lg mb-3">Danh sách thuốc</h3>
                   {selectedPrescription.medications_prescribed && selectedPrescription.medications_prescribed.length > 0 ? (
                     <div className="space-y-3">
                       {selectedPrescription.medications_prescribed.map((med, index) => (
@@ -585,7 +585,7 @@ const RevenueReport = () => {
 
                 {selectedPrescription.notes && (
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">📝 Ghi chú</div>
+                    <div className="text-sm text-gray-600 mb-2">Ghi chú</div>
                     <div className="text-sm">{selectedPrescription.notes}</div>
                   </div>
                 )}

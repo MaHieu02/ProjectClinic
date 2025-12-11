@@ -293,7 +293,6 @@ const SupplierDetail = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-600 text-xl mb-4">⚠️</div>
           <p className="text-red-600">{error || 'Không tìm thấy nhà cung cấp'}</p>
           <Button className="mt-4" onClick={() => navigate('/admin')}>
             Quay lại
@@ -393,7 +392,7 @@ const SupplierDetail = () => {
                       className="bg-green-600 hover:bg-green-700 text-white"
                       disabled={medicines.filter(m => !m.payment_status).length === 0}
                     >
-                      💰 Tất toán toàn bộ
+                      Tất toán toàn bộ
                     </Button>
                     <Button
                       variant="outline"
@@ -401,7 +400,7 @@ const SupplierDetail = () => {
                       onClick={() => setShowAddMedicineModal(true)}
                       className="bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      ➕ Thêm thuốc
+                      Thêm thuốc
                     </Button>
                     <Button
                       variant="outline"
@@ -416,7 +415,6 @@ const SupplierDetail = () => {
               <CardContent>
                 {medicines.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
-                    <span className="text-4xl mb-4 block">💊</span>
                     <p>Chưa có thuốc nào từ nhà cung cấp này</p>
                   </div>
                 ) : (
@@ -488,7 +486,7 @@ const SupplierDetail = () => {
                               disabled={medicine.payment_status}
                               className={medicine.payment_status ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'}
                             >
-                              {medicine.payment_status ? '✓ Đã thanh toán' : '💰 Tất toán'}
+                              {medicine.payment_status ? '✓ Đã thanh toán' : 'Tất toán'}
                             </Button>
                           </div>
                         </div>
@@ -710,7 +708,7 @@ const SupplierDetail = () => {
 
                 <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
                   <p className="text-sm text-orange-800">
-                    <span className="font-semibold">⚠️ Lưu ý:</span> Sau khi tất toán, bạn sẽ thanh toán 
+                    <span className="font-semibold">Lưu ý:</span> Sau khi tất toán, bạn sẽ thanh toán 
                     <span className="font-bold"> {selectedMedicine.reduce((sum, m) => sum + ((m.import_price || 0) * (m.initial_quantity || 0)), 0).toLocaleString('vi-VN')} VNĐ </span> 
                     cho nhà cung cấp <span className="font-semibold">{supplier.name}</span>.
                   </p>
@@ -775,7 +773,7 @@ const SupplierDetail = () => {
 
               <div className="bg-orange-50 p-3 rounded-lg border border-orange-200">
                 <p className="text-sm text-orange-800">
-                  <span className="font-semibold">⚠️ Lưu ý:</span> Sau khi tất toán, bạn sẽ thanh toán 
+                  <span className="font-semibold">Lưu ý:</span> Sau khi tất toán, bạn sẽ thanh toán 
                   <span className="font-bold"> {((selectedMedicine.import_price || 0) * (selectedMedicine.initial_quantity || 0)).toLocaleString('vi-VN')} VNĐ </span> 
                   cho nhà cung cấp <span className="font-semibold">{supplier.name}</span>.
                 </p>
@@ -797,7 +795,7 @@ const SupplierDetail = () => {
                 onClick={confirmPayment}
                 className="bg-green-600 hover:bg-green-700"
               >
-                💰 Xác nhận tất toán
+                Xác nhận tất toán
               </Button>
             </div>
           </div>

@@ -243,7 +243,6 @@ const PatientProfile = () => {
         <Card className="max-w-md">
           <CardContent className="pt-6">
             <div className="text-center">
-              <div className="text-4xl mb-4">⚠️</div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Có lỗi xảy ra</h3>
               <p className="text-gray-600 mb-4">{error}</p>
               <Button onClick={() => navigate(-1)} variant="outline">
@@ -299,7 +298,7 @@ const PatientProfile = () => {
             <div className="flex gap-3">
               {canEdit && (
                 <Button variant="default" className="bg-green-600 hover:bg-green-700 text-black" onClick={openEditModal}>
-                  ✏️ Chỉnh sửa
+                  Chỉnh sửa
                 </Button>
               )}
               <Button variant="outline" onClick={() => navigate(-1)}>
@@ -318,7 +317,7 @@ const PatientProfile = () => {
             <Card>
               <CardHeader className="bg-blue-50">
                 <CardTitle className="text-lg font-semibold text-blue-700 flex items-center gap-2">
-                  👤 Thông tin cá nhân
+                  Thông tin cá nhân
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-6">
@@ -339,21 +338,21 @@ const PatientProfile = () => {
                 <div className="space-y-4">
                   <div className="border-t pt-4">
                     <div className="flex items-start gap-2 mb-3">
-                      <span className="text-gray-500 text-sm min-w-[100px]">📞 Điện thoại:</span>
+                      <span className="text-gray-500 text-sm min-w-[100px]">Điện thoại:</span>
                       <span className="text-gray-800 font-medium text-sm">
                         {userInfo?.phone || 'Chưa có'}
                       </span>
                     </div>
                     
                     <div className="flex items-start gap-2 mb-3">
-                      <span className="text-gray-500 text-sm min-w-[100px]">📧 Email:</span>
+                      <span className="text-gray-500 text-sm min-w-[100px]">Email:</span>
                       <span className="text-gray-800 font-medium text-sm break-all">
                         {userInfo?.email || 'Chưa có'}
                       </span>
                     </div>
                     
                     <div className="flex items-start gap-2 mb-3">
-                      <span className="text-gray-500 text-sm min-w-[100px]">🎂 Ngày sinh:</span>
+                      <span className="text-gray-500 text-sm min-w-[100px]">Ngày sinh:</span>
                       <span className="text-gray-800 font-medium text-sm">
                         {formatDate(userInfo?.dob)}
                         {userInfo?.dob && (
@@ -365,21 +364,21 @@ const PatientProfile = () => {
                     </div>
                     
                     <div className="flex items-start gap-2 mb-3">
-                      <span className="text-gray-500 text-sm min-w-[100px]">⚥ Giới tính:</span>
+                      <span className="text-gray-500 text-sm min-w-[100px]">Giới tính:</span>
                       <span className="text-gray-800 font-medium text-sm">
                         {userInfo?.gender === 'male' ? 'Nam' : userInfo?.gender === 'female' ? 'Nữ' : 'Khác'}
                       </span>
                     </div>
                     
                     <div className="flex items-start gap-2">
-                      <span className="text-gray-500 text-sm min-w-[100px]">📍 Địa chỉ:</span>
+                      <span className="text-gray-500 text-sm min-w-[100px]">Địa chỉ:</span>
                       <span className="text-gray-800 font-medium text-sm">
                         {userInfo?.address || 'Chưa có'}
                       </span>
                     </div>
                     {canViewNotes && (patient?.notes || '').trim() !== '' && (
                       <div className="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
-                        <div className="text-sm text-gray-600 mb-1">📝 Ghi chú</div>
+                        <div className="text-sm text-gray-600 mb-1">Ghi chú</div>
                         <div className="text-sm text-gray-800 whitespace-pre-wrap">{patient?.notes}</div>
                       </div>
                     )}
@@ -393,7 +392,7 @@ const PatientProfile = () => {
               <Card className="mt-6 relative z-10">
                 <CardHeader>
                   <CardTitle className="text-lg font-semibold text-purple-700">
-                    📅 Đặt lịch hẹn
+                    Đặt lịch hẹn
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10">
@@ -414,7 +413,7 @@ const PatientProfile = () => {
                       }
                     }}
                   >
-                    {!patient?._id ? '⏳ Đang tải...' : '📅 Đặt lịch hẹn'}
+                    {!patient?._id ? 'Đang tải...' : 'Đặt lịch hẹn'}
                   </Button>
                 </CardContent>
               </Card>

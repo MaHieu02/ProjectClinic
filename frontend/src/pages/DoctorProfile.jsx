@@ -447,7 +447,6 @@ const DoctorProfile = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center py-12">
-                <div className="text-6xl mb-4">❌</div>
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">Lỗi</h2>
                 <p className="text-gray-600">{error}</p>
                 <Button 
@@ -471,7 +470,6 @@ const DoctorProfile = () => {
           <Card>
             <CardContent className="pt-6">
               <div className="text-center py-12">
-                <div className="text-6xl mb-4">👨‍⚕️</div>
                 <p className="text-gray-600">Không tìm thấy thông tin bác sĩ</p>
                 <Button 
                   onClick={() => navigate(-1)} 
@@ -541,7 +539,7 @@ const DoctorProfile = () => {
                   <CardTitle className="text-2xl mb-2">{userInfo?.full_name || 'Chưa có tên'}</CardTitle>
                   <div className="flex gap-2">
                     <Badge className="bg-green-100 text-green-800">
-                      👨‍⚕️ Bác sĩ
+                      Bác sĩ
                     </Badge>
                     <Badge className="bg-blue-100 text-blue-800">
                       {doctor.specialty_id?.name || 'Chưa có chuyên khoa'}
@@ -557,7 +555,7 @@ const DoctorProfile = () => {
                    onClick={openEditModal} 
                    className="bg-green-600 hover:bg-green-700 text-black relative z-10"
                  >
-                   ✏️ Chỉnh sửa
+                  Chỉnh sửa
                  </Button>
                  {getCurrentUserFromStorage()?.role === 'admin' && (
                    <>
@@ -588,33 +586,28 @@ const DoctorProfile = () => {
               {/* Thông tin cá nhân */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
-                  📋 Thông tin cá nhân
+                  Thông tin cá nhân
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <InfoRow 
-                    icon="📧" 
                     label="Email" 
                     value={userInfo?.email || 'Chưa có'} 
                   />
                   <InfoRow 
-                    icon="📞" 
                     label="Số điện thoại" 
                     value={userInfo?.phone || 'Chưa có'} 
                   />
                   <InfoRow 
-                    icon="📅" 
                     label="Ngày sinh" 
                     value={formatDate(userInfo?.dob)} 
                   />
                   <InfoRow 
-                    icon="👤" 
                     label="Giới tính" 
                     value={userInfo?.gender === 'male' ? 'Nam' : 'Nữ'} 
                   />
                 </div>
                 <div className="grid grid-cols-1 gap-3">
                   <InfoRow 
-                    icon="📍" 
                     label="Địa chỉ" 
                     value={userInfo?.address || 'Chưa có'} 
                   />
@@ -624,26 +617,22 @@ const DoctorProfile = () => {
               {/* Thông tin chuyên môn */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">
-                  🏥 Thông tin chuyên môn
+                  Thông tin chuyên môn
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <InfoRow 
-                    icon="🔬" 
                     label="Chuyên khoa" 
                     value={doctor.specialty_id?.name || 'Chưa có chuyên khoa'} 
                   />
                   <InfoRow 
-                    icon="📊" 
                     label="Trạng thái" 
                     value={doctor.is_active ? 'Đang hoạt động' : 'Không hoạt động'} 
                   />
                   <InfoRow 
-                    icon="🧑‍💼" 
                     label="Tình trạng làm việc" 
                     value={userInfo?.employment_status === false ? 'Đã nghỉ việc' : 'Đang làm việc'} 
                   />
                   <InfoRow 
-                    icon="📅" 
                     label="Ngày tạo hồ sơ" 
                     value={new Date(doctor.createdAt).toLocaleDateString('vi-VN')} 
                   />
@@ -651,7 +640,6 @@ const DoctorProfile = () => {
                 {doctor.busy_time && (
                   <div className="grid grid-cols-1 gap-3">
                     <InfoRow 
-                      icon="⏰" 
                       label="Thời gian bận" 
                       value={new Date(doctor.busy_time).toLocaleString('vi-VN')} 
                     />
@@ -713,7 +701,7 @@ const DoctorProfile = () => {
                   onClick={loadRevenue}
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
-                  📊 Doanh thu
+                  Doanh thu
                 </Button>
               </div>
             </div>
@@ -723,12 +711,11 @@ const DoctorProfile = () => {
         {/* Danh sách lịch hẹn */}
         <Card className="mb-6 border-2 border-purple-200 shadow-lg relative z-10">
           <CardHeader className="bg-transparent">
-            <CardTitle className="text-xl">📅 Danh sách lịch hẹn ({filteredAppointments.length})</CardTitle>
+            <CardTitle className="text-xl">Danh sách lịch hẹn ({filteredAppointments.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {filteredAppointments.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
-                <div className="text-6xl mb-4">📅</div>
                 <p>Không có lịch hẹn nào</p>
               </div>
             ) : (
@@ -790,7 +777,7 @@ const DoctorProfile = () => {
                                   disabled={loadingPrescription}
                                   className="bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 text-xs w-35"
                                 >
-                                  {loadingPrescription ? 'Đang tải...' : '💊 Xem đơn thuốc'}
+                                  {loadingPrescription ? 'Đang tải...' : 'Xem đơn thuốc'}
                                 </Button>
                               </div>
                             )}
@@ -866,7 +853,7 @@ const DoctorProfile = () => {
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">📊 Báo cáo doanh thu</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Báo cáo doanh thu</h2>
                 <button
                   onClick={() => setShowRevenueModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -939,7 +926,7 @@ const DoctorProfile = () => {
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">💊 Đơn thuốc</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Đơn thuốc</h2>
                 <button
                   onClick={() => setShowPrescriptionModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -983,13 +970,13 @@ const DoctorProfile = () => {
 
                 {selectedPrescription.symptoms && (
                   <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🤒 Triệu chứng</div>
+                    <div className="text-sm text-gray-600 mb-2">Triệu chứng</div>
                     <div className="font-medium">{selectedPrescription.symptoms}</div>
                   </div>
                 )}
 
                 <div>
-                  <h3 className="font-semibold text-lg mb-3">📋 Danh sách thuốc</h3>
+                  <h3 className="font-semibold text-lg mb-3">Danh sách thuốc</h3>
                   {selectedPrescription.medications_prescribed && selectedPrescription.medications_prescribed.length > 0 ? (
                     <div className="space-y-3">
                       {selectedPrescription.medications_prescribed.map((med, index) => (
@@ -1035,7 +1022,6 @@ const DoctorProfile = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
-                      <div className="text-4xl mb-2">💊</div>
                       <p>Không có thuốc được kê đơn</p>
                     </div>
                   )}
@@ -1043,7 +1029,7 @@ const DoctorProfile = () => {
 
                 {selectedPrescription.notes && (
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">📝 Ghi chú</div>
+                    <div className="text-sm text-gray-600 mb-2">Ghi chú</div>
                     <div className="text-sm">{selectedPrescription.notes}</div>
                   </div>
                 )}
@@ -1067,7 +1053,7 @@ const DoctorProfile = () => {
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">💊 Đơn thuốc</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Đơn thuốc</h2>
                 <button
                   onClick={() => setShowPrescriptionModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -1104,20 +1090,20 @@ const DoctorProfile = () => {
 
                 {selectedPrescription.diagnosis && (
                   <div className="bg-yellow-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🔍 Chẩn đoán</div>
+                    <div className="text-sm text-gray-600 mb-2">Chẩn đoán</div>
                     <div className="font-medium">{selectedPrescription.diagnosis}</div>
                   </div>
                 )}
 
                 {selectedPrescription.symptoms && (
                   <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🤒 Triệu chứng</div>
+                    <div className="text-sm text-gray-600 mb-2">Triệu chứng</div>
                     <div className="font-medium">{selectedPrescription.symptoms}</div>
                   </div>
                 )}
 
                 <div>
-                  <h3 className="font-semibold text-lg mb-3">📋 Danh sách thuốc</h3>
+                  <h3 className="font-semibold text-lg mb-3">Danh sách thuốc</h3>
                   {selectedPrescription.medications_prescribed && selectedPrescription.medications_prescribed.length > 0 ? (
                     <div className="space-y-3">
                       {selectedPrescription.medications_prescribed.map((med, index) => (
@@ -1163,7 +1149,6 @@ const DoctorProfile = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
-                      <div className="text-4xl mb-2">💊</div>
                       <p>Không có thuốc được kê đơn</p>
                     </div>
                   )}
@@ -1171,7 +1156,7 @@ const DoctorProfile = () => {
 
                 {selectedPrescription.notes && (
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">📝 Ghi chú</div>
+                    <div className="text-sm text-gray-600 mb-2">Ghi chú</div>
                     <div className="text-sm">{selectedPrescription.notes}</div>
                   </div>
                 )}
@@ -1291,7 +1276,7 @@ const DoctorProfile = () => {
                   disabled={isSaving}
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
-                  {isSaving ? 'Đang lưu...' : '💾 Lưu thay đổi'}
+                  {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </Button>
                 <Button
                   onClick={() => setShowEditModal(false)}
@@ -1311,7 +1296,7 @@ const DoctorProfile = () => {
    );
  };
 
-// Component helper cho các dòng thông tin
+// Component cho các dòng thông tin
 const InfoRow = ({ icon, label, value }) => (
   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
     <span className="text-xl">{icon}</span>

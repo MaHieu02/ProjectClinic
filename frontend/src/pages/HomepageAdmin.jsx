@@ -1089,11 +1089,11 @@ const HomepageAdmin = () => {
                               {patient.user_id?.full_name || 'Chưa có tên'}
                             </div>
                             <div className="text-xs text-gray-600">
-                              📞 SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}
+                              SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}
                             </div>
                             {patient.user_id?.dob && (
                               <div className="text-xs text-gray-600">
-                                🎂 Sinh: {formatDate(patient.user_id.dob)}
+                                Ngày sinh: {formatDate(patient.user_id.dob)}
                               </div>
                             )}
                             {patient.user_id?.gender && (
@@ -1103,7 +1103,7 @@ const HomepageAdmin = () => {
                             )}
                             {patient.user_id?.address && (
                               <div className="text-xs text-gray-500 mt-1">
-                                📍 {patient.user_id.address}
+                                {patient.user_id.address}
                               </div>
                             )}
                           </div>
@@ -1125,7 +1125,6 @@ const HomepageAdmin = () => {
                 
                 {searchPatient.trim() && searchResults.length === 0 && !isSearching && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy bệnh nhân</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -1204,8 +1203,8 @@ const HomepageAdmin = () => {
                               <div className="mt-1 grid grid-cols-1 md:grid-cols-2 gap-y-1 text-xs text-gray-600">
                                 {isDoctor ? (
                                   <>
-                                    <div>🏥 Chuyên khoa: {item.specialty_id?.name || 'Chưa xác định'}</div>
-                                    <div>📞 SĐT: {user?.phone || 'Chưa có SĐT'}</div>
+                                    <div>Chuyên khoa: {item.specialty_id?.name || 'Chưa xác định'}</div>
+                                    <div>SĐT: {user?.phone || 'Chưa có SĐT'}</div>
                                     <div className="col-span-1">
                                       <Badge className={`${item.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                                         {item.is_active ? 'Hoạt động' : 'Không hoạt động'}
@@ -1214,8 +1213,8 @@ const HomepageAdmin = () => {
                                   </>
                                 ) : (
                                   <>
-                                    <div>📞 SĐT: {user?.phone || 'Chưa có SĐT'}</div>
-                                    <div>{user?.email ? `✉️ Email: ${user.email}` : '✉️ Email: Chưa có'}</div>
+                                    <div>SĐT: {user?.phone || 'Chưa có SĐT'}</div>
+                                    <div>{user?.email ? `Email: ${user.email}` : 'Email: Chưa có'}</div>
                                   </>
                                 )}
                               </div>
@@ -1239,7 +1238,6 @@ const HomepageAdmin = () => {
 
                 {searchStaff.trim() && searchStaffResults.length === 0 && !isSearchingStaff && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy nhân viên</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -1305,16 +1303,16 @@ const HomepageAdmin = () => {
                               👤 Người liên hệ: {supplier.contact_person || 'Chưa có'}
                             </div>
                             <div className="text-xs text-gray-600">
-                              📞 SĐT: {supplier.phone || 'Chưa có SĐT'}
+                              SĐT: {supplier.phone || 'Chưa có SĐT'}
                             </div>
                             {supplier.email && (
                               <div className="text-xs text-gray-600">
-                                ✉️ Email: {supplier.email}
+                                Email: {supplier.email}
                               </div>
                             )}
                             {supplier.address && (
                               <div className="text-xs text-gray-500 mt-1">
-                                📍 {supplier.address}
+                                Địa chỉ: {supplier.address}
                               </div>
                             )}
                             <div className="mt-1">
@@ -1341,7 +1339,6 @@ const HomepageAdmin = () => {
                 
                 {searchSupplier.trim() && supplierResults.length === 0 && !isSearchingSupplier && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy nhà cung cấp</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -1404,11 +1401,11 @@ const HomepageAdmin = () => {
                               {specialty.name}
                             </div>
                             <div className="text-xs text-gray-600">
-                              🔖 Mã: {specialty.code.toUpperCase()}
+                               Mã: {specialty.code.toUpperCase()}
                             </div>
                             {specialty.description && (
                               <div className="text-xs text-gray-500 mt-1">
-                                📝 {specialty.description}
+                               Mô tả{specialty.description}
                               </div>
                             )}
                             <div className="mt-1">
@@ -1435,7 +1432,6 @@ const HomepageAdmin = () => {
                 
                 {searchSpecialty.trim() && specialtyResults.length === 0 && !isSearchingSpecialty && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy chuyên khoa</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -1498,16 +1494,16 @@ const HomepageAdmin = () => {
                               {fee.examination_type}
                             </div>
                             <div className="text-xs text-gray-600">
-                              💰 Phí: {fee.fee.toLocaleString('vi-VN')} VNĐ
+                              Phí: {fee.fee.toLocaleString('vi-VN')} VNĐ
                             </div>
                             {fee.specialty_id && (
                               <div className="text-xs text-gray-600">
-                                🏥 Chuyên khoa: {fee.specialty_id.name}
+                                Chuyên khoa: {fee.specialty_id.name}
                               </div>
                             )}
                             {fee.description && (
                               <div className="text-xs text-gray-500 mt-1">
-                                📝 {fee.description}
+                                {fee.description}
                               </div>
                             )}
                             <div className="mt-1">
@@ -1534,7 +1530,6 @@ const HomepageAdmin = () => {
                 
                 {searchExaminationFee.trim() && examinationFeeResults.length === 0 && !isSearchingExaminationFee && (
                   <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                    <div className="text-4xl mb-2">🔍</div>
                     <p className="text-sm text-gray-600 font-medium">Không tìm thấy dịch vụ khám</p>
                     <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                   </div>
@@ -1550,7 +1545,6 @@ const HomepageAdmin = () => {
               <Card className="border-2 border-gray-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Bệnh nhân hôm nay</CardTitle>
-                  <span className="text-2xl">👥</span>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-blue-600">{statistics.totalPatientsToday}</div>
@@ -1560,7 +1554,6 @@ const HomepageAdmin = () => {
               <Card className="border-2 border-gray-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Lịch hẹn hoàn thành</CardTitle>
-                  <span className="text-2xl">✅</span>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-green-600">{statistics.completedAppointments}</div>
@@ -1570,7 +1563,6 @@ const HomepageAdmin = () => {
               <Card className="border-2 border-gray-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Đơn đã đặt</CardTitle>
-                  <span className="text-2xl">⏳</span>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-yellow-600">{statistics.waitingAppointments}</div>
@@ -1580,7 +1572,6 @@ const HomepageAdmin = () => {
               <Card className="border-2 border-gray-300">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Bác sĩ hoạt động</CardTitle>
-                  <span className="text-2xl">👨‍⚕️</span>
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold text-purple-600">{statistics.activeDoctors}</div>
@@ -1593,7 +1584,6 @@ const HomepageAdmin = () => {
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center">
-                    <span className="mr-2">📅</span>
                     Lịch hẹn hôm nay ({todayAppointments.length})
                   </span>
                   <Button 
@@ -2140,7 +2130,7 @@ const HomepageAdmin = () => {
                     className="w-full text-red-600 border-red-600 hover:bg-red-50"
                     onClick={() => handleDeactivateSpecialty(selectedSpecialty._id)}
                   >
-                    🚫 Vô hiệu hóa chuyên khoa
+                    Vô hiệu hóa chuyên khoa
                   </Button>
                 ) : (
                   <Button
@@ -2148,7 +2138,7 @@ const HomepageAdmin = () => {
                     className="w-full text-green-600 border-green-600 hover:bg-green-50"
                     onClick={() => handleReactivateSpecialty(selectedSpecialty._id)}
                   >
-                    🔄 Kích hoạt lại chuyên khoa
+                    Kích hoạt lại chuyên khoa
                   </Button>
                 )}
               </div>
@@ -2256,7 +2246,7 @@ const HomepageAdmin = () => {
                     className="w-full text-red-600 border-red-600 hover:bg-red-50"
                     onClick={() => handleDeactivateExaminationFee(selectedExaminationFee._id)}
                   >
-                    🚫 Vô hiệu hóa dịch vụ khám
+                    Vô hiệu hóa dịch vụ khám
                   </Button>
                 ) : (
                   <Button
@@ -2264,7 +2254,7 @@ const HomepageAdmin = () => {
                     className="w-full text-green-600 border-green-600 hover:bg-green-50"
                     onClick={() => handleReactivateExaminationFee(selectedExaminationFee._id)}
                   >
-                    🔄 Kích hoạt lại dịch vụ khám
+                    Kích hoạt lại dịch vụ khám
                   </Button>
                 )}
               </div>

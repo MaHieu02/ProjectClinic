@@ -724,12 +724,12 @@ const HomepageDoctor = () => {
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <div className="font-medium text-sm text-gray-800">{patient.user_id?.full_name || 'Chưa có tên'}</div>
-                              <div className="text-xs text-gray-600">📞 SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}</div>
+                              <div className="text-xs text-gray-600">SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}</div>
                               {patient.user_id?.dob && (
-                                <div className="text-xs text-gray-600">🎂 Sinh: {formatDate(patient.user_id.dob)}</div>
+                                <div className="text-xs text-gray-600">Ngày sinh: {formatDate(patient.user_id.dob)}</div>
                               )}
                               {patient.user_id?.address && (
-                                <div className="text-xs text-gray-500 mt-1">📍 {patient.user_id.address}</div>
+                                <div className="text-xs text-gray-500 mt-1">Địa chỉ: {patient.user_id.address}</div>
                               )}
                             </div>
                             <div className="text-blue-500 text-xs ml-2">Xem →</div>
@@ -748,7 +748,6 @@ const HomepageDoctor = () => {
 
                   {patientSearch.trim() && patientResults.length === 0 && !isSearchingPatients && (
                     <div className="mt-2 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                      <div className="text-4xl mb-2">🔍</div>
                       <p className="text-sm text-gray-600 font-medium">Không tìm thấy bệnh nhân</p>
                       <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
                     </div>
@@ -1122,7 +1121,7 @@ const HomepageDoctor = () => {
                   className={!isOnline ? 'opacity-50 cursor-not-allowed' : 'text-white bg-blue-600 hover:bg-blue-700'}
                   title={!isOnline ? 'Bác sĩ đang offline. Vui lòng chuyển sang chế độ online để lưu hồ sơ' : 'Lưu hồ sơ và đơn thuốc'}
                 >
-                  {!isOnline ? '⚫ Offline - Không thể lưu' : 'Lưu hồ sơ và đơn thuốc'}
+                  {!isOnline ? 'Offline - Không thể lưu' : 'Lưu hồ sơ và đơn thuốc'}
                 </Button>
               </div>
             </div>

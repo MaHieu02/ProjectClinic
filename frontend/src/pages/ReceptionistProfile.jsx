@@ -457,7 +457,7 @@ const ReceptionistProfile = () => {
                 <div>
                   <CardTitle className="text-2xl mb-2">{user?.full_name || 'Chưa có tên'}</CardTitle>
                   <div className="flex gap-2">
-                    <Badge className="bg-blue-100 text-blue-800">🛎️ Lễ tân</Badge>
+                    <Badge className="bg-blue-100 text-blue-800">Lễ tân</Badge>
                     <Badge className={user?.employment_status === false ? 'bg-red-500 text-white' : 'bg-green-500 text-white'}>
                       {user?.employment_status === false ? 'Đã nghỉ việc' : 'Đang làm việc'}
                     </Badge>
@@ -469,7 +469,7 @@ const ReceptionistProfile = () => {
                   onClick={openEditModal} 
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
-                  ✏️ Chỉnh sửa
+                  Chỉnh sửa
                 </Button>
                 {getCurrentUserFromStorage()?.role === 'admin' && (
                   <>
@@ -498,14 +498,14 @@ const ReceptionistProfile = () => {
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">📋 Thông tin cá nhân</h3>
-                <InfoRow icon="📧" label="Email" value={user?.email || 'Chưa có'} />
-                <InfoRow icon="📞" label="Số điện thoại" value={user?.phone || 'Chưa có'} />
-                <InfoRow icon="📅" label="Ngày sinh" value={formatDate(user?.dob)} />
-                <InfoRow icon="👤" label="Giới tính" value={user?.gender === 'male' ? 'Nam' : 'Nữ'} />
-                <InfoRow icon="📍" label="Địa chỉ" value={user?.address || 'Chưa có'} />
-                <InfoRow icon="🧑‍💼" label="Tình trạng làm việc" value={user?.employment_status === false ? 'Đã nghỉ việc' : 'Đang làm việc'} />
-                <InfoRow icon="🗓️" label="Ngày tạo hồ sơ" value={formatDate(receptionist?.createdAt)} />
+                <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Thông tin cá nhân</h3>
+                <InfoRow label="Email" value={user?.email || 'Chưa có'} />
+                <InfoRow label="Số điện thoại" value={user?.phone || 'Chưa có'} />
+                <InfoRow label="Ngày sinh" value={formatDate(user?.dob)} />
+                <InfoRow label="Giới tính" value={user?.gender === 'male' ? 'Nam' : 'Nữ'} />
+                <InfoRow label="Địa chỉ" value={user?.address || 'Chưa có'} />
+                <InfoRow label="Tình trạng làm việc" value={user?.employment_status === false ? 'Đã nghỉ việc' : 'Đang làm việc'} />
+                <InfoRow label="Ngày tạo hồ sơ" value={formatDate(receptionist?.createdAt)} />
               </div>
             </div>
           </CardContent>
@@ -514,7 +514,7 @@ const ReceptionistProfile = () => {
         {/* Phần Lọc và Thống Kê */}
         <Card className="mb-6 border-2 border-blue-200 shadow-lg relative z-10">
           <CardHeader className="bg-transparent">
-            <CardTitle className="text-xl">🔍 Lọc lịch hẹn và thống kê</CardTitle>
+            <CardTitle className="text-xl">Lọc lịch hẹn và thống kê</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
@@ -556,13 +556,13 @@ const ReceptionistProfile = () => {
                   onClick={handleFilterChange}
                   className="flex-1 bg-blue-600 hover:bg-blue-700"
                 >
-                  🔍 Lọc
+                  Lọc
                 </Button>
                 <Button
                   onClick={loadRevenue}
                   className="flex-1 bg-green-600 hover:bg-green-700"
                 >
-                  📊 Doanh thu
+                  Doanh thu
                 </Button>
               </div>
             </div>
@@ -572,12 +572,11 @@ const ReceptionistProfile = () => {
         {/* Danh sách lịch hẹn */}
         <Card className="mb-6 border-2 border-purple-200 shadow-lg relative z-10">
           <CardHeader className="bg-transparent">
-            <CardTitle className="text-xl">📅 Danh sách lịch hẹn ({filteredAppointments.length})</CardTitle>
+            <CardTitle className="text-xl">Danh sách lịch hẹn ({filteredAppointments.length})</CardTitle>
           </CardHeader>
           <CardContent>
             {filteredAppointments.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
-                <div className="text-6xl mb-4">📅</div>
                 <p>Không có lịch hẹn nào</p>
               </div>
             ) : (
@@ -639,7 +638,7 @@ const ReceptionistProfile = () => {
                                   disabled={loadingPrescription}
                                   className="bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 text-xs w-full"
                                 >
-                                  {loadingPrescription ? 'Đang tải...' : '💊 Xem đơn thuốc'}
+                                  {loadingPrescription ? 'Đang tải...' : 'Xem đơn thuốc'}
                                 </Button>
                               </div>
                             )}
@@ -707,7 +706,7 @@ const ReceptionistProfile = () => {
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">📊 Báo cáo doanh thu</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Báo cáo doanh thu</h2>
                 <button
                   onClick={() => setShowRevenueModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -780,7 +779,7 @@ const ReceptionistProfile = () => {
           <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">💊 Đơn thuốc</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Đơn thuốc</h2>
                 <button
                   onClick={() => setShowPrescriptionModal(false)}
                   className="text-gray-500 hover:text-gray-700 text-2xl"
@@ -817,20 +816,20 @@ const ReceptionistProfile = () => {
 
                 {selectedPrescription.diagnosis && (
                   <div className="bg-yellow-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🔍 Chẩn đoán</div>
+                    <div className="text-sm text-gray-600 mb-2">Chẩn đoán</div>
                     <div className="font-medium">{selectedPrescription.diagnosis}</div>
                   </div>
                 )}
 
                 {selectedPrescription.symptoms && (
                   <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">🤒 Triệu chứng</div>
+                    <div className="text-sm text-gray-600 mb-2">Triệu chứng</div>
                     <div className="font-medium">{selectedPrescription.symptoms}</div>
                   </div>
                 )}
 
                 <div>
-                  <h3 className="font-semibold text-lg mb-3">📋 Danh sách thuốc</h3>
+                  <h3 className="font-semibold text-lg mb-3">Danh sách thuốc</h3>
                   {selectedPrescription.medications_prescribed && selectedPrescription.medications_prescribed.length > 0 ? (
                     <div className="space-y-3">
                       {selectedPrescription.medications_prescribed.map((med, index) => (
@@ -876,7 +875,6 @@ const ReceptionistProfile = () => {
                     </div>
                   ) : (
                     <div className="text-center py-8 text-gray-500">
-                      <div className="text-4xl mb-2">💊</div>
                       <p>Không có thuốc được kê đơn</p>
                     </div>
                   )}
@@ -884,7 +882,7 @@ const ReceptionistProfile = () => {
 
                 {selectedPrescription.notes && (
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">📝 Ghi chú</div>
+                    <div className="text-sm text-gray-600 mb-2">Ghi chú</div>
                     <div className="text-sm">{selectedPrescription.notes}</div>
                   </div>
                 )}
@@ -1005,7 +1003,7 @@ const ReceptionistProfile = () => {
                   disabled={isSaving}
                   className="flex-1 bg-blue-600 hover:bg-blue-700"
                 >
-                  {isSaving ? 'Đang lưu...' : '💾 Lưu thay đổi'}
+                  {isSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
                 </Button>
                 <Button
                   onClick={() => setShowEditModal(false)}
@@ -1024,9 +1022,8 @@ const ReceptionistProfile = () => {
   );
 };
 
-const InfoRow = ({ icon, label, value }) => (
+const InfoRow = ({ label, value }) => (
   <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-    <span className="text-xl">{icon}</span>
     <div className="flex-1">
       <div className="text-xs text-gray-500 mb-1">{label}</div>
       <div className="text-sm font-medium text-gray-800">{value}</div>

@@ -699,7 +699,7 @@ const AppointmentHome = () => {
                         
                         <div className="mt-3 pt-3 border-t border-gray-200">
                           <p className="text-xs text-gray-500 text-center">
-                            💡 Click vào bệnh nhân để chọn
+                            Click vào bệnh nhân để chọn
                           </p>
                         </div>
                       </div>
