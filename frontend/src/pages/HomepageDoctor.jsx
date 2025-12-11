@@ -552,15 +552,15 @@ const HomepageDoctor = () => {
   };
 
   // Tìm kiếm bệnh nhân cho bác sĩ
-  const handleSearchPatients = useCallback(async (termRaw) => {
-    const term = (termRaw || '').trim();
-    if (!term) {
+  const handleSearchPatients = useCallback(async (query) => {
+    if (!query.trim()) {
       setPatientResults([]);
       return;
     }
+
     setIsSearchingPatients(true);
     try {
-      const result = await searchPatients(term);
+      const result = await searchPatients(query);
       if (result.success) {
         setPatientResults(result.data || []);
       } else {
@@ -578,14 +578,15 @@ const HomepageDoctor = () => {
 
   // Tự động tìm kiếm với debounce khi người dùng gõ
   useEffect(() => {
-    if (!patientSearch.trim()) {
-      setPatientResults([]);
-      return;
-    }
-    const t = setTimeout(() => {
-      handleSearchPatients(patientSearch);
-    }, 400);
-    return () => clearTimeout(t);
+    const timeoutId = setTimeout(() => {
+      if (patientSearch) {
+        handleSearchPatients(patientSearch);
+      } else {
+        setPatientResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
   }, [patientSearch, handleSearchPatients]);
 
   return (
@@ -634,15 +635,14 @@ const HomepageDoctor = () => {
               </div>
               <div className="flex items-center space-x-4">
                 <Button 
-                  variant={isOnline ? "default" : "outline"}
                   size="sm" 
                   onClick={handleToggleOnlineStatus}
                   disabled={isLoading}
-                  className={`transition-all duration-300 ${isOnline ? "bg-green-600 hover:bg-green-700 shadow-lg" : "hover:bg-gray-100"}`}
+                  className={`transition-all duration-300 ${isOnline ? "bg-green-600 hover:bg-green-700 text-white shadow-lg" : "bg-gray-200 hover:bg-gray-300 text-black"}`}
                   title={`Click để chuyển sang chế độ ${isOnline ? 'Offline' : 'Online'}`}
                 >
                   <span className="flex items-center space-x-2">
-                    <span className={`w-2 h-2 rounded-full animate-pulse ${isOnline ? 'bg-white' : 'bg-gray-400'}`}></span>
+                    <span className={`w-2 h-2 rounded-full animate-pulse ${isOnline ? 'bg-white' : 'bg-gray-600'}`}></span>
                     <span className="font-medium">{isOnline ? '🟢 Online' : '⚫ Offline'}</span>
                   </span>
                 </Button>
@@ -657,261 +657,315 @@ const HomepageDoctor = () => {
           </div>
         </div>
 
-        <div className="bg-white border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="py-4 flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-gray-900">Lịch khám hôm nay</h2>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-gray-600">Trạng thái:</span>
-                <Badge className={`${isOnline ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                  <span className="flex items-center space-x-1">
-                    <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-600 animate-pulse' : 'bg-gray-400'}`}></span>
-                    <span>{isOnline ? 'Đang hoạt động' : 'Không hoạt động'}</span>
-                  </span>
-                </Badge>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Lịch hẹn */}
-          <div className="space-y-6">
-            {/* Tìm kiếm bệnh nhân */}
-            <Card className="border-2 border-gray-300">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Tìm kiếm bệnh nhân</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Nhập tên hoặc số điện thoại..."
-                      value={patientSearch}
-                      onChange={(e) => setPatientSearch(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleSearchPatients(e.currentTarget.value);
-                        }
-                      }}
-                      className="flex-1"
-                    />
-                    <Button
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Cột trái */}
+            <div className="lg:col-span-1 space-y-6">
+              <Card className="border-2 border-gray-300">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold">Tìm kiếm bệnh nhân</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="relative">
+                      <Input
+                        placeholder="Nhập tên hoặc số điện thoại..."
+                        value={patientSearch}
+                        onChange={(e) => setPatientSearch(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter') {
+                            handleSearchPatients(patientSearch);
+                          }
+                        }}
+                        className="pr-10"
+                      />
+                      {isSearchingPatients && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                        </div>
+                      )}
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      className="w-full bg-green-400 hover:bg-green-500 text-black hover:text-green-700 hover:border-green-300"
                       onClick={() => handleSearchPatients(patientSearch)}
                       disabled={isSearchingPatients || !patientSearch.trim()}
-                      className="bg-green-600 hover:bg-green-700"
                     >
-                      {isSearchingPatients ? 'Đang tìm...' : 'Tìm kiếm'}
+                      {isSearchingPatients ? "Đang tìm kiếm..." : "Tìm kiếm"}
                     </Button>
                   </div>
 
-                  {patientResults.length > 0 && (
-                    <div className="mt-2 max-h-60 overflow-y-auto">
-                      <div className="text-sm text-gray-700 mb-2">Kết quả ({patientResults.length}):</div>
-                      {patientResults.map((patient) => (
-                        <div
-                          key={patient._id}
-                          className="p-3 border rounded mb-2 hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all duration-200"
-                          onClick={() => {
-                            const uid = patient.user_id?._id;
-                            if (uid) {
-                              navigate(`/patient/${uid}`);
-                            } else {
-                              showToast('Không thể xem thông tin bệnh nhân này', 'error');
-                            }
-                          }}
-                        >
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <div className="font-medium text-sm text-gray-800">{patient.user_id?.full_name || 'Chưa có tên'}</div>
-                              <div className="text-xs text-gray-600">SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}</div>
-                              {patient.user_id?.dob && (
-                                <div className="text-xs text-gray-600">Ngày sinh: {formatDate(patient.user_id.dob)}</div>
-                              )}
-                              {patient.user_id?.address && (
-                                <div className="text-xs text-gray-500 mt-1">Địa chỉ: {patient.user_id.address}</div>
-                              )}
+                    {patientResults.length > 0 && (
+                      <div className="mt-4 max-h-60 overflow-y-auto">
+                        <h4 className="text-sm font-medium text-gray-700 mb-2">Kết quả tìm kiếm:</h4>
+                        {patientResults.map((patient) => (
+                          <div
+                            key={patient._id}
+                            className="p-3 border rounded mb-2 hover:bg-blue-50 hover:border-blue-300 cursor-pointer transition-all duration-200 hover:shadow-md"
+                            onClick={() => {
+                              if (patient.user_id?._id) {
+                                navigate(`/patient/${patient.user_id._id}`);
+                              } else {
+                                showToast('Không thể xem thông tin bệnh nhân này', 'error');
+                              }
+                            }}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <div className="font-medium text-sm text-gray-800">{patient.user_id?.full_name || 'Chưa có tên'}</div>
+                                <div className="text-xs text-gray-600">SĐT: {patient.user_id?.phone || 'Chưa có SĐT'}</div>
+                                {patient.user_id?.dob && (
+                                  <div className="text-xs text-gray-600">Ngày sinh: {formatDate(patient.user_id.dob)}</div>
+                                )}
+                                {patient.user_id?.address && (
+                                  <div className="text-xs text-gray-500 mt-1">Địa chỉ: {patient.user_id.address}</div>
+                                )}
+                              </div>
+                              <div className="text-blue-500 text-xs ml-2">Xem →</div>
                             </div>
-                            <div className="text-blue-500 text-xs ml-2">Xem →</div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        ))}
+                      </div>
+                    )}
 
-                  {isSearchingPatients && patientSearch.trim() && (
-                    <div className="mt-2 text-center py-4">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
-                      <p className="text-sm text-gray-500">Đang tìm kiếm...</p>
-                    </div>
-                  )}
+                    {patientSearch.trim() && patientResults.length === 0 && !isSearchingPatients && (
+                      <div className="mt-4 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                        <p className="text-sm text-gray-600 font-medium">Không tìm thấy bệnh nhân</p>
+                        <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
 
-                  {patientSearch.trim() && patientResults.length === 0 && !isSearchingPatients && (
-                    <div className="mt-2 text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                      <p className="text-sm text-gray-600 font-medium">Không tìm thấy bệnh nhân</p>
-                      <p className="text-xs text-gray-500 mt-1">Thử tìm kiếm với từ khóa khác</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Danh sách lịch khám</h2>
-              <div className="flex items-center space-x-4">
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={loadTodayAppointments}
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Đang tải...' : '🔄 Làm mới'}
-                </Button>
-                <span className="text-sm text-gray-600">
-                  {formatDate(new Date().toISOString())} - {appointments.length} cuộc hẹn
-                </span>
-              </div>
-            </div>
-
-            {isLoading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="text-gray-500">Đang tải danh sách lịch hẹn...</div>
-              </div>
-            ) : appointments.length === 0 ? (
-              <Card>
-                <CardContent className="p-12 text-center">
-                  <p className="text-gray-500">Không có lịch hẹn nào trong ngày hôm nay</p>
+              {/* Thống kê nhanh */}
+              <Card className="border-2 border-blue-300 bg-gradient-to-br from-blue-50 to-indigo-50">
+                <CardHeader>
+                  <CardTitle className="text-lg font-semibold text-gray-800">Thống kê nhanh</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                    <span className="text-sm text-gray-700 font-medium">Lịch hẹn hôm nay:</span>
+                    <Badge className="bg-blue-100 text-blue-800 font-semibold">
+                      {isLoading ? "..." : appointments.length}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
+                    <span className="text-sm text-gray-700 font-medium">Đã hoàn thành:</span>
+                    <Badge className="bg-green-100 text-green-800 font-semibold">
+                      {isLoading ? "..." : appointments.filter(apt => apt.status === 'completed').length}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100">
+                    <span className="text-sm text-gray-700 font-medium">Chờ khám:</span>
+                    <Badge className="bg-yellow-100 text-yellow-800 font-semibold">
+                      {isLoading ? "..." : appointments.filter(apt => apt.status === 'checked').length}
+                    </Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-100">
+                    <span className="text-sm text-gray-700 font-medium">Trạng thái:</span>
+                    <Badge className={`font-semibold ${isOnline ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {isOnline ? '🟢 Online' : '⚫ Offline'}
+                    </Badge>
+                  </div>
                 </CardContent>
               </Card>
-            ) : (
-              <div className="grid gap-4">
-                {paginatedAppointments.map((appointment) => {
-                  // Tính số thứ tự cho lịch hẹn chờ khám
-                  const isCheckedStatus = appointment.status === 'checked';
-                  const orderNumber = isCheckedStatus 
-                    ? appointments.filter(apt => apt.status === 'checked')
-                        .findIndex(apt => apt._id === appointment._id) + 1
-                    : null;
-                  
-                  return (
-                  <Card key={appointment._id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-6">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
-                            {isCheckedStatus && orderNumber && (
-                              <div className="flex items-center justify-center w-8 h-8 bg-blue-600 text-white font-bold rounded-full">
-                                {orderNumber}
+            </div>
+
+            {/* Cột phải */}
+            <div className="lg:col-span-2">
+              <Card className="border-2 border-gray-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    <span className="flex items-center">
+                      Lịch khám hôm nay ({appointments.length})
+                    </span>
+                    <Button 
+                      className="hover:bg-gray-300"
+                      onClick={loadTodayAppointments}
+                      variant="outline"
+                      size="sm"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? 'Đang tải...' : '🔄 Làm mới'}
+                    </Button>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="text-center py-8">
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                      <div className="text-gray-500">Đang tải dữ liệu...</div>
+                    </div>
+                  ) : appointments.length === 0 ? (
+                    <div className="text-center py-8">
+                      <div className="text-gray-500">Không có lịch hẹn nào hôm nay</div>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {paginatedAppointments.map((appointment) => {
+                        // Tính số thứ tự cho lịch hẹn chờ khám
+                        const isCheckedStatus = appointment.status === 'checked';
+                        const orderNumber = isCheckedStatus 
+                          ? appointments.filter(apt => apt.status === 'checked')
+                              .findIndex(apt => apt._id === appointment._id) + 1
+                          : null;
+                        
+                        return (
+                          <Card key={appointment._id} className="hover:shadow-md transition-shadow">
+                            <CardContent className="p-6">
+                              <div className="flex justify-between items-start">
+                                <div className="flex-1">
+                                  <div className="flex items-center space-x-3 mb-2">
+                                    {isCheckedStatus && orderNumber && (
+                                      <div className="flex items-center justify-center w-8 h-8 bg-blue-600 text-white font-bold rounded-full">
+                                        {orderNumber}
+                                      </div>
+                                    )}
+                                    <h3 className="font-semibold text-lg">
+                                      {appointment.patient_id?.user_id?.full_name || 'Chưa có tên'}
+                                    </h3>
+                                    {getStatusBadge(appointment.status)}
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+                                    <div>
+                                      <span className="font-medium">
+                                        {isCheckedStatus ? 'Thời gian chờ:' : 'Thời gian hẹn:'}
+                                      </span> {isCheckedStatus 
+                                        ? new Date(appointment.updatedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
+                                        : formatTime(appointment.appointment_time)
+                                      }
+                                    </div>
+                                    <div>
+                                      <span className="font-medium">SĐT:</span> {appointment.patient_id?.user_id?.phone || 'Chưa có'}
+                                    </div>
+                                    <div className="col-span-2">
+                                      <span className="font-medium">Triệu chứng:</span> {appointment.symptoms || 'Chưa có'}
+                                    </div>
+                                  </div>
+                                  {appointment.notes && (
+                                    <div className="mt-2 text-sm text-gray-600">
+                                      <span className="font-medium">Ghi chú:</span> {appointment.notes}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleOpenMedicalRecordForm(appointment)}
+                                    disabled={appointment.status !== 'checked' || !isOnline}
+                                    className={appointment.status === 'checked' && isOnline ? 'bg-green-600 hover:bg-green-700' : ''}
+                                    title={
+                                      !isOnline 
+                                        ? 'Bác sĩ đang offline. Vui lòng chuyển sang chế độ online để khám bệnh'
+                                        : appointment.status !== 'checked' 
+                                          ? 'Chỉ có thể khám khi trạng thái là "Chờ khám"' 
+                                          : 'Khám bệnh'
+                                    }
+                                  >
+                                    {!isOnline 
+                                      ? '⚫ Offline' 
+                                      : appointment.status === 'checked' 
+                                        ? '✓ Khám bệnh' 
+                                        : '🔒 Khám bệnh'
+                                    }
+                                  </Button>
+                                </div>
                               </div>
-                            )}
-                            <h3 className="font-semibold text-lg">
-                              {appointment.patient_id?.user_id?.full_name || 'Chưa có tên'}
-                            </h3>
-                            {getStatusBadge(appointment.status)}
-                          </div>
-                          <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
-                            <div>
-                              <span className="font-medium">Mã BN:</span> {appointment.patient_id?._id?.slice(-6) || 'N/A'}
-                            </div>
-                            <div>
-                              <span className="font-medium">
-                                {isCheckedStatus ? 'Thời gian chờ:' : 'Thời gian hẹn:'}
-                              </span> {isCheckedStatus 
-                                ? new Date(appointment.updatedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-                                : formatTime(appointment.appointment_time)
-                              }
-                            </div>
-                            <div>
-                              <span className="font-medium">Triệu chứng:</span> {appointment.symptoms || 'Chưa có'}
-                            </div>
-                            <div>
-                              <span className="font-medium">SĐT:</span> {appointment.patient_id?.user_id?.phone || 'Chưa có'}
-                            </div>
-                          </div>
-                          {appointment.notes && (
-                            <div className="mt-2 text-sm text-gray-600">
-                              <span className="font-medium">Ghi chú:</span> {appointment.notes}
-                            </div>
-                          )}
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+
+                      {appointments.length > itemsPerPage && (
+                        <div className="flex justify-center mt-6">
+                          <Pagination>
+                            <PaginationContent>
+                              <PaginationItem>
+                                <PaginationPrevious 
+                                  href="#" 
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (currentPage > 1) handlePageChange(currentPage - 1);
+                                  }}
+                                  className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                                />
+                              </PaginationItem>
+                              
+                              {[...Array(totalPages)].map((_, index) => {
+                                const page = index + 1;
+                                return (
+                                  <PaginationItem key={page}>
+                                    <PaginationLink
+                                      href="#"
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        handlePageChange(page);
+                                      }}
+                                      isActive={currentPage === page}
+                                    >
+                                      {page}
+                                    </PaginationLink>
+                                  </PaginationItem>
+                                );
+                              })}
+                              
+                              <PaginationItem>
+                                <PaginationNext 
+                                  href="#" 
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    if (currentPage < totalPages) handlePageChange(currentPage + 1);
+                                  }}
+                                  className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                                />
+                              </PaginationItem>
+                            </PaginationContent>
+                          </Pagination>
                         </div>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                              onClick={() => handleOpenMedicalRecordForm(appointment)}
-                              disabled={appointment.status !== 'checked' || !isOnline}
-                              className={appointment.status === 'checked' && isOnline ? 'bg-green-600 hover:bg-green-700' : ''}
-                              title={
-                                !isOnline 
-                                  ? 'Bác sĩ đang offline. Vui lòng chuyển sang chế độ online để khám bệnh'
-                                  : appointment.status !== 'checked' 
-                                    ? 'Chỉ có thể khám khi trạng thái là "Chờ khám"' 
-                                    : 'Khám bệnh'
-                              }
-                            >
-                              {!isOnline 
-                                ? '⚫ Offline' 
-                                : appointment.status === 'checked' 
-                                  ? '✓ Khám bệnh' 
-                                  : '🔒 Khám bệnh'
-                              }
-                            </Button>
-                          </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  );
-                })}
+                      )}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Các thẻ thống kê */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+                <Card className="text-center transition-shadow hover:shadow-lg bg-gradient-to-br from-orange-50 to-pink-50 border-2 border-orange-300">
+                  <CardContent className="pt-6">
+                    <div className="text-3xl font-bold text-orange-600">
+                      {isLoading ? "..." : appointments.length}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium mt-2">Lịch hẹn hôm nay</p>
+                  </CardContent>
+                </Card>
+                <Card className="text-center transition-shadow hover:shadow-lg bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300">
+                  <CardContent className="pt-6">
+                    <div className="text-3xl font-bold text-emerald-600">
+                      {isLoading ? "..." : appointments.filter(apt => apt.status === 'completed').length}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium mt-2">Đã hoàn thành</p>
+                  </CardContent>
+                </Card>
+                <Card className="text-center transition-shadow hover:shadow-lg bg-gradient-to-br from-amber-50 to-yellow-50 border-2 border-amber-300">
+                  <CardContent className="pt-6">
+                    <div className="text-3xl font-bold text-amber-600">
+                      {isLoading ? "..." : appointments.filter(apt => apt.status === 'checked').length}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium mt-2">Chờ khám</p>
+                  </CardContent>
+                </Card>
+                <Card className="text-center transition-shadow hover:shadow-lg bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-300">
+                  <CardContent className="pt-6">
+                    <div className="text-3xl font-bold text-purple-600">
+                      {isLoading ? "..." : appointments.filter(apt => apt.status === 'booked').length}
+                    </div>
+                    <p className="text-sm text-gray-700 font-medium mt-2">Đã đặt lịch</p>
+                  </CardContent>
+                </Card>
               </div>
-            )}
-            {!isLoading && appointments.length > itemsPerPage && (
-              <div className="flex justify-center mt-6">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious 
-                        href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (currentPage > 1) handlePageChange(currentPage - 1);
-                        }}
-                        className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                      />
-                    </PaginationItem>
-                    
-                    {[...Array(totalPages)].map((_, index) => {
-                      const page = index + 1;
-                      return (
-                        <PaginationItem key={page}>
-                          <PaginationLink
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handlePageChange(page);
-                            }}
-                            isActive={currentPage === page}
-                          >
-                            {page}
-                          </PaginationLink>
-                        </PaginationItem>
-                      );
-                    })}
-                    
-                    <PaginationItem>
-                      <PaginationNext 
-                        href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          if (currentPage < totalPages) handlePageChange(currentPage + 1);
-                        }}
-                        className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
-              </div>
-            )}
+            </div>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* Modal form hồ sơ bệnh án */}
@@ -979,6 +1033,7 @@ const HomepageDoctor = () => {
                   value={medicalRecordForm.follow_up}
                   onChange={handleMedicalRecordChange}
                   placeholder="Tái khám sau 1 tuần..."
+                  className="mt-1"
                 />
               </div>
 

@@ -98,7 +98,7 @@ export const getDoctors = async (req, res) => {
         }
 
         const doctors = await Doctor.find(query)
-            .populate('user_id', 'full_name phone email dob address gender')
+            .populate('user_id', 'full_name phone email dob address gender username')
             .populate('specialty_id', 'name code description')
             .skip(skip)
             .limit(limitNum)
@@ -164,7 +164,7 @@ export const getDoctorByUserId = async (req, res) => {
         const { userId } = req.params;
 
         const doctor = await Doctor.findOne({ user_id: userId })
-            .populate('user_id', 'full_name phone email dob address gender employment_status')
+            .populate('user_id', 'full_name phone email dob address gender employment_status username')
             .populate('specialty_id', 'name code description');
 
         if (!doctor) {
@@ -201,7 +201,7 @@ export const getDoctorsBySpecialty = async (req, res) => {
             user_id: { $in: activeUserIds },
             is_active: true
         })
-        .populate('user_id', 'full_name phone email dob address gender')
+        .populate('user_id', 'full_name phone email dob address gender username')
         .populate('specialty_id', 'name code description')
         .sort({ createdAt: -1 });
 
@@ -374,7 +374,7 @@ export const toggleDoctorActiveStatus = async (req, res) => {
             id,
             { is_active: is_active !== undefined ? is_active : !doctor.is_active },
             { new: true }
-        ).populate('user_id', 'full_name email phone');
+        ).populate('user_id', 'full_name email phone username');
 
         res.status(200).json({
             success: true,
@@ -404,7 +404,7 @@ export const getActiveDoctors = async (req, res) => {
         const activeUserIds = activeDoctorUsers.map(u => u._id);
 
         const activeDoctors = await Doctor.find({ ...filter, user_id: { $in: activeUserIds } })
-            .populate('user_id', 'full_name email phone')
+            .populate('user_id', 'full_name email phone username')
             .populate('specialty_id', 'name code description')
             .sort({ specialty_id: 1, 'user_id.full_name': 1 });
 

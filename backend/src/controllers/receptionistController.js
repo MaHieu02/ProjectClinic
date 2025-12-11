@@ -34,7 +34,7 @@ export const createReceptionist = async (req, res) => {
 
         await receptionist.save();
 
-        await receptionist.populate('user_info');
+        await receptionist.populate('user_id', 'full_name phone email dob address gender username employment_status');
 
         res.status(201).json({
             success: true,
@@ -116,7 +116,7 @@ export const getReceptionists = async (req, res) => {
         }
 
         const receptionists = await Receptionist.find(query)
-            .populate('user_info')
+            .populate('user_id', 'full_name phone email dob address gender username employment_status')
             .skip(skip)
             .limit(limitNum)
             .sort({ createdAt: -1 });
@@ -151,7 +151,7 @@ export const getReceptionistById = async (req, res) => {
         const { id } = req.params;
 
         const receptionist = await Receptionist.findById(id)
-            .populate('user_info');
+            .populate('user_id', 'full_name phone email dob address gender username employment_status');
 
         if (!receptionist) {
             return res.status(404).json({
@@ -180,7 +180,7 @@ export const getReceptionistByUserId = async (req, res) => {
         const { userId } = req.params;
 
         const receptionist = await Receptionist.findOne({ user_id: userId })
-            .populate('user_info');
+            .populate('user_id', 'full_name phone email dob address gender username employment_status');
 
         if (!receptionist) {
             return res.status(404).json({
@@ -212,7 +212,7 @@ export const updateReceptionist = async (req, res) => {
             id,
             req.body,
             { new: true, runValidators: true }
-        ).populate('user_info');
+        ).populate('user_id', 'full_name phone email dob address gender username employment_status');
 
         if (!receptionist) {
             return res.status(404).json({

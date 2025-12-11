@@ -368,7 +368,7 @@ const SupplierDetail = () => {
 
                 <div className="pt-4 border-t">
                   <Button
-                    className={`w-full ${supplier.is_active ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
+                    className={`w-full ${supplier.is_active ? 'bg-red-600  hover:bg-red-700' : 'bg-green-600 hover:bg-green-700'}`}
                     onClick={handleToggleStatus}
                   >
                     {supplier.is_active ? 'Vô hiệu hóa nhà cung cấp' : 'Kích hoạt nhà cung cấp'}
@@ -432,7 +432,7 @@ const SupplierDetail = () => {
                                 {medicine.is_active ? 'Còn bán' : 'Ngưng bán'}
                               </Badge>
                               <Badge className={medicine.payment_status ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800'}>
-                                {medicine.payment_status ? '✓ Đã tất toán' : '⏳ Chưa thanh toán'}
+                                {medicine.payment_status ? '✓ Đã tất toán' : 'Chưa thanh toán'}
                               </Badge>
                             </div>
 
@@ -484,7 +484,7 @@ const SupplierDetail = () => {
                               size="sm"
                               onClick={() => handlePaymentSingle(medicine)}
                               disabled={medicine.payment_status}
-                              className={medicine.payment_status ? 'bg-gray-400' : 'bg-green-600 hover:bg-green-700'}
+                              className={medicine.payment_status ? 'bg-gray-400' : 'bg-green-600 text-white hover:bg-green-700'}
                             >
                               {medicine.payment_status ? '✓ Đã thanh toán' : 'Tất toán'}
                             </Button>

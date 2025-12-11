@@ -39,7 +39,9 @@ const PatientProfile = () => {
     email: '',
     dob: '',
     gender: 'male',
-    address: ''
+    address: '',
+    username: '',
+    password: ''
   });
 
   // Tải lịch sử khám bệnh của bệnh nhân
@@ -146,7 +148,9 @@ const PatientProfile = () => {
         email: userInfo.email || '',
         dob: formattedDob,
         gender: userInfo.gender || 'male',
-        address: userInfo.address || ''
+        address: userInfo.address || '',
+        username: userInfo.username || '',
+        password: ''
       });
       setNotesText(patient?.notes || '');
       setShowEditModal(true);
@@ -169,13 +173,21 @@ const PatientProfile = () => {
     setIsSaving(true);
     try {
       const token = getToken();
+      
+      const updateData = { ...editForm };
+      
+      // Nếu không có password, xóa trường password khỏi updateData
+      if (!updateData.password || updateData.password.trim() === '') {
+        delete updateData.password;
+      }
+      
       const response = await apiCall(`/users/${patient.user_id._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(editForm)
+        body: JSON.stringify(updateData)
       });
 
       if (response.success) {
@@ -297,7 +309,7 @@ const PatientProfile = () => {
             </div>
             <div className="flex gap-3">
               {canEdit && (
-                <Button variant="default" className="bg-green-600 hover:bg-green-700 text-black" onClick={openEditModal}>
+                <Button variant="default" className="bg-green-600 hover:bg-green-700 text-white" onClick={openEditModal}>
                   Chỉnh sửa
                 </Button>
               )}
@@ -536,6 +548,7 @@ const PatientProfile = () => {
                   value={editForm.full_name}
                   onChange={handleEditFormChange}
                   placeholder="Nguyễn Văn A"
+                  className="mt-3"
                 />
               </div>
 
@@ -547,6 +560,7 @@ const PatientProfile = () => {
                   value={editForm.phone}
                   onChange={handleEditFormChange}
                   placeholder="0123456789"
+                  className="mt-3"
                 />
               </div>
 
@@ -559,6 +573,7 @@ const PatientProfile = () => {
                   value={editForm.email}
                   onChange={handleEditFormChange}
                   placeholder="email@example.com"
+                  className="mt-3"
                 />
               </div>
 
@@ -570,6 +585,7 @@ const PatientProfile = () => {
                   type="date"
                   value={editForm.dob}
                   onChange={handleEditFormChange}
+                  className="mt-3"
                 />
               </div>
 
@@ -580,7 +596,7 @@ const PatientProfile = () => {
                   name="gender"
                   value={editForm.gender}
                   onChange={handleEditFormChange}
-                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring mt-3"
                 >
                   <option value="male">Nam</option>
                   <option value="female">Nữ</option>
@@ -595,6 +611,7 @@ const PatientProfile = () => {
                   value={editForm.address}
                   onChange={handleEditFormChange}
                   placeholder="123 Đường ABC, Quận XYZ"
+                  className="mt-3"
                 />
               </div>
 
@@ -603,12 +620,40 @@ const PatientProfile = () => {
                 <Label htmlFor="notes">Ghi chú</Label>
                 <textarea
                   id="notes"
-                  className="w-full mt-1 p-2 border border-gray-300 rounded-md min-h-[120px]"
+                  className="w-full mt-3 p-2 border border-gray-300 rounded-md min-h-[120px]"
                   value={notesText}
                   onChange={(e) => setNotesText(e.target.value)}
                   placeholder="Nhập ghi chú cho bệnh nhân này..."
                 />
               </div>
+
+              {/* Hiển thị thêm username và password nếu là admin */}
+              {getCurrentUserFromStorage()?.role === 'admin' && (
+                <div className="md:col-span-2 border-t pt-4 mt-4">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">Thông tin đăng nhập</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="username">Tên đăng nhập</Label>
+                      <div className="mt-3 text-sm text-gray-700 font-medium">
+                        {patient?.user_id?.username || 'Chưa có'}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="password">Mật khẩu mới (để trống nếu không đổi)</Label>
+                      <Input
+                        id="password"
+                        name="password"
+                        type="text"
+                        value={editForm.password}
+                        onChange={handleEditFormChange}
+                        placeholder="Nhập mật khẩu mới"
+                        className="mt-3"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div className="flex justify-end space-x-3 pt-6 border-t mt-6">

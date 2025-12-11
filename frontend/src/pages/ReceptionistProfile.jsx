@@ -1,16 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { getReceptionistByUserId, deleteReceptionist, reactivateReceptionist } from '@/services/receptionistService';
 import { getCurrentUserFromStorage, getToken } from '@/utils/auth';
 import { apiCall } from '@/utils/api';
-import { getAllAppointments } from '@/services/appointmentService';
-import { getMedicalRecordByAppointment } from '@/services/medicalRecordService';
 
  
 const ReceptionistProfile = () => {
@@ -18,20 +15,10 @@ const ReceptionistProfile = () => {
   const navigate = useNavigate();
   
   const [receptionist, setReceptionist] = useState(null);
-  const [appointments, setAppointments] = useState([]);
-  const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterDates, setFilterDates] = useState({ startDate: '', endDate: '' });
-  const [revenueData, setRevenueData] = useState(null);
-  const [showRevenueModal, setShowRevenueModal] = useState(false);
   const [toast, setToast] = useState({ show: false, message: '', type: '' });
-  const [selectedPrescription, setSelectedPrescription] = useState(null);
-  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
-  const [loadingPrescription, setLoadingPrescription] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -40,9 +27,10 @@ const ReceptionistProfile = () => {
     email: '',
     dob: '',
     gender: 'male',
-    address: ''
+    address: '',
+    username: '',
+    password: ''
   });
-  const itemsPerPage = 10;
 
   // Hiển thị thông báo
   const showToast = (message, type) => {
@@ -50,153 +38,6 @@ const ReceptionistProfile = () => {
     setTimeout(() => {
       setToast({ show: false, message: '', type: '' });
     }, 3000);
-  };
-
-  // Áp dụng bộ lọc lên danh sách lịch hẹn
-  const applyFilters = useCallback((appointmentsList) => {
-    if (!appointmentsList) return;
-    
-    let filtered = [...appointmentsList];
-
-    if (filterStatus !== 'all') {
-      filtered = filtered.filter(apt => apt.status === filterStatus);
-    }
-
-    if (filterDates.startDate) {
-      filtered = filtered.filter(apt => {
-        const dateField = apt.appointment_time || apt.date;
-        if (!dateField) return false;
-        try {
-          const aptDate = new Date(dateField);
-          if (isNaN(aptDate.getTime())) return false;
-          const aptDateStr = aptDate.toISOString().split('T')[0];
-          return aptDateStr >= filterDates.startDate;
-        } catch {
-          return false;
-        }
-      });
-    }
-    if (filterDates.endDate) {
-      filtered = filtered.filter(apt => {
-        const dateField = apt.appointment_time || apt.date;
-        if (!dateField) return false;
-        try {
-          const aptDate = new Date(dateField);
-          if (isNaN(aptDate.getTime())) return false;
-          const aptDateStr = aptDate.toISOString().split('T')[0];
-          return aptDateStr <= filterDates.endDate;
-        } catch {
-          return false;
-        }
-      });
-    }
-
-    setFilteredAppointments(filtered);
-    setCurrentPage(1);
-  }, [filterStatus, filterDates]);
-
-  // Tải danh sách lịch hẹn của lễ tân
-  const loadAppointments = useCallback(async (receptionistUserId) => {
-    try {
-      const response = await getAllAppointments(1, 1000);
-      if (response.success && response.data) {
-        const appointmentsArray = Array.isArray(response.data) ? response.data : (response.data.appointments || []);
-      
-        const receptionistAppointments = appointmentsArray.filter(
-          apt => apt.booked_by === receptionistUserId || 
-                 apt.receptionist_id === receptionistUserId ||
-                 apt.receptionist_id?._id === receptionistUserId ||
-                 apt.pharmacist_id === receptionistUserId ||
-                 apt.pharmacist_id?._id === receptionistUserId
-        );
-        setAppointments(receptionistAppointments);
-        setFilteredAppointments(receptionistAppointments);
-      }
-    } catch (err) {
-      console.error('Error loading appointments:', err);
-      showToast('Không thể tải danh sách lịch hẹn', 'error');
-    }
-  }, []);
-
-  // Xử lý thay đổi bộ lọc
-  const handleFilterChange = () => {
-    applyFilters(appointments);
-  };
-
-  // Xem đơn thuốc
-  const handleViewPrescription = async (appointmentId) => {
-    try {
-      setLoadingPrescription(true);
-      const response = await getMedicalRecordByAppointment(appointmentId);
-      if (response.success && response.data) {
-        setSelectedPrescription(response.data);
-        setShowPrescriptionModal(true);
-      } else {
-        showToast('Không tìm thấy đơn thuốc cho lịch hẹn này', 'error');
-      }
-    } catch (err) {
-      console.error('Error loading prescription:', err);
-      showToast('Không thể tải đơn thuốc', 'error');
-    } finally {
-      setLoadingPrescription(false);
-    }
-  };
-
-  // Tải dữ liệu doanh thu
-  const loadRevenue = async () => {
-    if (!receptionist?.user_info?._id) return;
-
-    try {
-      const startDate = filterDates.startDate || new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().split('T')[0];
-      const endDate = filterDates.endDate || new Date().toISOString().split('T')[0];
-      
-      const receptionistAppointments = filteredAppointments.filter(apt => {
-        if (apt.status !== 'completed') return false;
-        if (!apt.pharmacist_id) return false; 
-        return true;
-      });
-
-      const totalExaminationFee = receptionistAppointments.reduce((sum, apt) => {
-        const fee = apt.examination_fee_id?.fee || apt.examination_fee || 0;
-        return sum + fee;
-      }, 0);
-
-      let medicineIncome = 0;
-      let totalMedicinesSold = 0;
-      
-      for (const apt of receptionistAppointments) {
-        try {
-          const recordResponse = await getMedicalRecordByAppointment(apt._id);
-          if (recordResponse.success && recordResponse.data) {
-            const record = recordResponse.data;
-            if (record.status === 'dispensed' && record.medications_prescribed) {
-              for (const med of record.medications_prescribed) {
-                const price = med.medicine_id?.price || 0;
-                const quantity = med.quantity || 0;
-                medicineIncome += price * quantity;
-                totalMedicinesSold += quantity;
-              }
-            }
-          }
-        } catch (err) {
-          console.error('Error loading medical record for appointment:', apt._id, err);
-        }
-      }
-
-      setRevenueData({
-        totalAppointments: receptionistAppointments.length,
-        completedAppointments: receptionistAppointments.length,
-        examinationRevenue: totalExaminationFee,
-        medicineRevenue: medicineIncome,
-        totalMedicinesSold: totalMedicinesSold,
-        totalRevenue: totalExaminationFee + medicineIncome,
-        period: { startDate, endDate }
-      });
-      setShowRevenueModal(true);
-    } catch (err) {
-      console.error('Error loading revenue:', err);
-      showToast('Không thể tải dữ liệu doanh thu', 'error');
-    }
   };
 
   // Tải dữ liệu lễ tân
@@ -214,9 +55,6 @@ const ReceptionistProfile = () => {
         const res = await getReceptionistByUserId(userId);
         if (res.success && res.data) {
           setReceptionist(res.data);
-          if (res.data.user_info?._id) {
-            await loadAppointments(res.data.user_info._id);
-          }
         } else {
           setError(res.error || 'Không tìm thấy lễ tân');
         }
@@ -229,7 +67,7 @@ const ReceptionistProfile = () => {
     };
 
     loadData();
-  }, [userId, loadAppointments]);
+  }, [userId]);
 
   // format ngày sinh
   const formatDate = (dateString) => {
@@ -246,8 +84,8 @@ const ReceptionistProfile = () => {
 
   // Mở modal chỉnh sửa
   const openEditModal = () => {
-    if (receptionist?.user_info) {
-      const userInfo = receptionist.user_info;
+    if (receptionist?.user_id) {
+      const userInfo = receptionist.user_id;
       
       let formattedDob = '';
       if (userInfo.dob) {
@@ -267,7 +105,9 @@ const ReceptionistProfile = () => {
         email: userInfo.email || '',
         dob: formattedDob,
         gender: userInfo.gender || 'male',
-        address: userInfo.address || ''
+        address: userInfo.address || '',
+        username: userInfo.username || '',
+        password: ''
       });
       setShowEditModal(true);
     } else {
@@ -286,7 +126,7 @@ const ReceptionistProfile = () => {
 
   // Xử lý lưu thay đổi thông tin lễ tân
   const handleSaveChanges = async () => {
-    if (!receptionist?.user_info?._id) {
+    if (!receptionist?.user_id?._id) {
       showToast('Không tìm thấy thông tin người dùng', 'error');
       return;
     }
@@ -302,7 +142,12 @@ const ReceptionistProfile = () => {
 
       const updateData = { ...editForm };
       
-      const result = await apiCall(`/users/${receptionist.user_info._id}`, {
+      // Nếu không có password, xóa trường password khỏi updateData
+      if (!updateData.password || updateData.password.trim() === '') {
+        delete updateData.password;
+      }
+      
+      const result = await apiCall(`/users/${receptionist.user_id._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -411,7 +256,7 @@ const ReceptionistProfile = () => {
     );
   }
 
-  const user = receptionist?.user_info;
+  const user = receptionist?.user_id;
 
   return (
     <div className="min-h-screen w-full bg-white relative overflow-hidden p-6">
@@ -510,396 +355,7 @@ const ReceptionistProfile = () => {
             </div>
           </CardContent>
         </Card>
-
-        {/* Phần Lọc và Thống Kê */}
-        <Card className="mb-6 border-2 border-blue-200 shadow-lg relative z-10">
-          <CardHeader className="bg-transparent">
-            <CardTitle className="text-xl">Lọc lịch hẹn và thống kê</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-              <div>
-                <Label htmlFor="startDate">Từ ngày</Label>
-                <Input
-                  id="startDate"
-                  type="date"
-                  value={filterDates.startDate}
-                  onChange={(e) => setFilterDates(prev => ({ ...prev, startDate: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="endDate">Đến ngày</Label>
-                <Input
-                  id="endDate"
-                  type="date"
-                  value={filterDates.endDate}
-                  onChange={(e) => setFilterDates(prev => ({ ...prev, endDate: e.target.value }))}
-                />
-              </div>
-              <div>
-                <Label htmlFor="status">Trạng thái</Label>
-                <select
-                  id="status"
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 h-10"
-                >
-                  <option value="all">Tất cả</option>
-                  <option value="booked">Đã đặt</option>
-                  <option value="checked">Đã check-in</option>
-                  <option value="completed">Hoàn thành</option>
-                  <option value="cancelled">Đã hủy</option>
-                </select>
-              </div>
-              <div className="flex items-end gap-2">
-                <Button
-                  onClick={handleFilterChange}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
-                >
-                  Lọc
-                </Button>
-                <Button
-                  onClick={loadRevenue}
-                  className="flex-1 bg-green-600 hover:bg-green-700"
-                >
-                  Doanh thu
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Danh sách lịch hẹn */}
-        <Card className="mb-6 border-2 border-purple-200 shadow-lg relative z-10">
-          <CardHeader className="bg-transparent">
-            <CardTitle className="text-xl">Danh sách lịch hẹn ({filteredAppointments.length})</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {filteredAppointments.length === 0 ? (
-              <div className="text-center py-12 text-gray-500">
-                <p>Không có lịch hẹn nào</p>
-              </div>
-            ) : (
-              <>
-                <div className="space-y-3">
-                  {filteredAppointments
-                    .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                    .map((appointment) => (
-                      <div
-                        key={appointment._id}
-                        className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
-                      >
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                          <div>
-                            <div className="text-xs text-gray-500 mb-1">Bệnh nhân</div>
-                            <div className="font-medium">{appointment.patient_id?.user_id?.full_name || 'Chưa có tên'}</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 mb-1">Ngày hẹn</div>
-                            <div className="font-medium">
-                              {appointment.appointment_time || appointment.date 
-                                ? new Date(appointment.appointment_time || appointment.date).toLocaleDateString('vi-VN') 
-                                : 'Chưa có'}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 mb-1">Giờ hẹn</div>
-                            <div className="font-medium">
-                              {appointment.appointment_time 
-                                ? new Date(appointment.appointment_time).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })
-                                : appointment.time || 'Chưa có'}
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-gray-500 mb-1">Trạng thái</div>
-                            <Badge
-                              className={
-                                appointment.status === 'completed'
-                                  ? 'bg-green-100 text-green-800'
-                                  : appointment.status === 'cancelled'
-                                  ? 'bg-red-100 text-red-800'
-                                  : appointment.status === 'checked'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-yellow-100 text-yellow-800'
-                              }
-                            >
-                              {appointment.status === 'completed'
-                                ? 'Hoàn thành'
-                                : appointment.status === 'cancelled'
-                                ? 'Đã hủy'
-                                : appointment.status === 'checked'
-                                ? 'Đã check-in'
-                                : 'Đã đặt'}
-                            </Badge>
-                            {appointment.status === 'completed' && (
-                              <div className="mt-2">
-                                <Button
-                                  onClick={() => handleViewPrescription(appointment._id)}
-                                  disabled={loadingPrescription}
-                                  className="bg-blue-600 hover:bg-blue-700 text-white h-8 px-3 text-xs w-full"
-                                >
-                                  {loadingPrescription ? 'Đang tải...' : 'Xem đơn thuốc'}
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {appointment.symptoms && (
-                          <div className="mt-2 pt-2 border-t border-gray-100">
-                            <div className="text-xs text-gray-500">Triệu chứng</div>
-                            <div className="text-sm">{appointment.symptoms}</div>
-                          </div>
-                        )}
-                        {(appointment.examination_fee_id?.fee || appointment.examination_fee) && (
-                          <div className="mt-2 pt-2 border-t border-gray-100">
-                            <div className="text-xs text-gray-500">Phí khám</div>
-                            <div className="text-sm font-medium text-green-600">
-                              {(appointment.examination_fee_id?.fee || appointment.examination_fee || 0).toLocaleString('vi-VN')} VNĐ
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                </div>
-
-                {/* Pagination */}
-                {filteredAppointments.length > itemsPerPage && (
-                  <div className="mt-6 flex justify-center">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                        {[...Array(Math.ceil(filteredAppointments.length / itemsPerPage))].map((_, idx) => (
-                          <PaginationItem key={idx}>
-                            <PaginationLink
-                              onClick={() => setCurrentPage(idx + 1)}
-                              isActive={currentPage === idx + 1}
-                              className="cursor-pointer"
-                            >
-                              {idx + 1}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                          <PaginationNext
-                            onClick={() => setCurrentPage(prev => Math.min(Math.ceil(filteredAppointments.length / itemsPerPage), prev + 1))}
-                            className={currentPage === Math.ceil(filteredAppointments.length / itemsPerPage) ? 'pointer-events-none opacity-50' : 'cursor-pointer'}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                )}
-              </>
-            )}
-          </CardContent>
-        </Card>
       </div>
-
-      {/* Thống kê doanh thu */}
-      {showRevenueModal && revenueData && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Báo cáo doanh thu</h2>
-                <button
-                  onClick={() => setShowRevenueModal(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="text-sm text-gray-600 mb-2">Khoảng thời gian</div>
-                  <div className="font-medium">
-                    {new Date(revenueData.period.startDate).toLocaleDateString('vi-VN')} - {new Date(revenueData.period.endDate).toLocaleDateString('vi-VN')}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-green-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Tổng số lịch hẹn</div>
-                    <div className="text-3xl font-bold text-green-600">{revenueData.totalAppointments}</div>
-                  </div>
-                  <div className="bg-blue-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Lịch hoàn thành</div>
-                    <div className="text-3xl font-bold text-blue-600">{revenueData.completedAppointments}</div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-purple-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Thu nhập từ khám bệnh</div>
-                    <div className="text-2xl font-bold text-purple-600">
-                      {revenueData.examinationRevenue.toLocaleString('vi-VN')} VNĐ
-                    </div>
-                  </div>
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Thu nhập từ thuốc ({revenueData.totalMedicinesSold || 0} đơn vị)</div>
-                    <div className="text-2xl font-bold text-orange-600">
-                      {revenueData.medicineRevenue.toLocaleString('vi-VN')} VNĐ
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-lg border-2 border-green-200">
-                  <div className="text-sm text-gray-600 mb-2">Tổng doanh thu</div>
-                  <div className="text-4xl font-bold text-green-600">
-                    {revenueData.totalRevenue.toLocaleString('vi-VN')} VNĐ
-                  </div>
-                  <div className="text-xs text-white mt-2">
-                    Khám bệnh + Thuốc
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <Button
-                  onClick={() => setShowRevenueModal(false)}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white"
-                >
-                  Đóng
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Xem đơn thuốc */}
-      {showPrescriptionModal && selectedPrescription && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Đơn thuốc</h2>
-                <button
-                  onClick={() => setShowPrescriptionModal(false)}
-                  className="text-gray-500 hover:text-gray-700 text-2xl"
-                >
-                  ×
-                </button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Bệnh nhân</div>
-                      <div className="font-medium">{selectedPrescription.patient_id?.user_id?.full_name || 'Chưa có'}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Bác sĩ</div>
-                      <div className="font-medium">{selectedPrescription.doctor_id?.user_id?.full_name || 'Chưa có'}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Ngày khám</div>
-                      <div className="font-medium">{formatDate(selectedPrescription.createdAt)}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-500 mb-1">Trạng thái</div>
-                      <div className="font-medium">
-                        <Badge className={selectedPrescription.status === 'dispensed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                          {selectedPrescription.status === 'dispensed' ? 'Đã xuất thuốc' : 'Chưa xuất thuốc'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {selectedPrescription.diagnosis && (
-                  <div className="bg-yellow-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Chẩn đoán</div>
-                    <div className="font-medium">{selectedPrescription.diagnosis}</div>
-                  </div>
-                )}
-
-                {selectedPrescription.symptoms && (
-                  <div className="bg-orange-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Triệu chứng</div>
-                    <div className="font-medium">{selectedPrescription.symptoms}</div>
-                  </div>
-                )}
-
-                <div>
-                  <h3 className="font-semibold text-lg mb-3">Danh sách thuốc</h3>
-                  {selectedPrescription.medications_prescribed && selectedPrescription.medications_prescribed.length > 0 ? (
-                    <div className="space-y-3">
-                      {selectedPrescription.medications_prescribed.map((med, index) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-4">
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Tên thuốc</div>
-                              <div className="font-medium">{med.medicine_id?.name || 'Chưa có'}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Số lượng</div>
-                              <div className="font-medium">{med.quantity} {med.medicine_id?.unit || 'viên'}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Liều lượng</div>
-                              <div className="font-medium">{med.dosage || 'Chưa có'}</div>
-                            </div>
-                            <div>
-                              <div className="text-xs text-gray-500 mb-1">Giá</div>
-                              <div className="font-medium text-green-600">
-                                {(med.medicine_id?.price || 0).toLocaleString('vi-VN')} VNĐ
-                              </div>
-                            </div>
-                          </div>
-                          {med.instructions && (
-                            <div className="mt-2 pt-2 border-t border-gray-100">
-                              <div className="text-xs text-gray-500">Hướng dẫn sử dụng</div>
-                              <div className="text-sm">{med.instructions}</div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      <div className="bg-green-50 p-4 rounded-lg border-2 border-green-200">
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold">Tổng tiền thuốc:</span>
-                          <span className="text-xl font-bold text-green-600">
-                            {selectedPrescription.medications_prescribed.reduce((sum, med) => 
-                              sum + (med.quantity * (med.medicine_id?.price || 0)), 0
-                            ).toLocaleString('vi-VN')} VNĐ
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <p>Không có thuốc được kê đơn</p>
-                    </div>
-                  )}
-                </div>
-
-                {selectedPrescription.notes && (
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="text-sm text-gray-600 mb-2">Ghi chú</div>
-                    <div className="text-sm">{selectedPrescription.notes}</div>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-6">
-                <Button
-                  onClick={() => setShowPrescriptionModal(false)}
-                  className="w-full bg-gray-600 hover:bg-gray-700 text-white"
-                >
-                  Đóng
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Modal chỉnh sửa thông tin */}
       {showEditModal && (
@@ -927,6 +383,7 @@ const ReceptionistProfile = () => {
                     onChange={handleEditFormChange}
                     placeholder="Nhập họ và tên"
                     disabled={isSaving}
+                    className="mt-3"
                   />
                 </div>
 
@@ -940,6 +397,7 @@ const ReceptionistProfile = () => {
                       onChange={handleEditFormChange}
                       placeholder="Nhập số điện thoại"
                       disabled={isSaving}
+                      className="mt-3"
                     />
                   </div>
                   <div>
@@ -952,6 +410,7 @@ const ReceptionistProfile = () => {
                       onChange={handleEditFormChange}
                       placeholder="Nhập email"
                       disabled={isSaving}
+                      className="mt-3"
                     />
                   </div>
                 </div>
@@ -966,6 +425,7 @@ const ReceptionistProfile = () => {
                       value={editForm.dob}
                       onChange={handleEditFormChange}
                       disabled={isSaving}
+                      className="mt-3"
                     />
                   </div>
                   <div>
@@ -975,7 +435,7 @@ const ReceptionistProfile = () => {
                       name="gender"
                       value={editForm.gender}
                       onChange={handleEditFormChange}
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 mt-3"
                       disabled={isSaving}
                     >
                       <option value="male">Nam</option>
@@ -993,8 +453,38 @@ const ReceptionistProfile = () => {
                     onChange={handleEditFormChange}
                     placeholder="Nhập địa chỉ"
                     disabled={isSaving}
+                    className="mt-3"
                   />
                 </div>
+
+                {/* Hiển thị thêm username và password nếu là admin */}
+                {getCurrentUserFromStorage()?.role === 'admin' && (
+                  <div className="border-t pt-4 mt-4">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Thông tin đăng nhập</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="username">Tên đăng nhập</Label>
+                        <div className="mt-3 text-sm text-gray-700 font-medium">
+                          {receptionist?.user_id?.username || 'Chưa có'}
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="password">Mật khẩu mới (để trống nếu không đổi)</Label>
+                        <Input
+                          id="password"
+                          name="password"
+                          type="text"
+                          value={editForm.password}
+                          onChange={handleEditFormChange}
+                          placeholder="Nhập mật khẩu mới"
+                          disabled={isSaving}
+                          className="mt-3"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex gap-3 mt-6">

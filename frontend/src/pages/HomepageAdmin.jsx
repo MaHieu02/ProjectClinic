@@ -1405,7 +1405,7 @@ const HomepageAdmin = () => {
                             </div>
                             {specialty.description && (
                               <div className="text-xs text-gray-500 mt-1">
-                               Mô tả{specialty.description}
+                               Mô tả: {specialty.description}
                               </div>
                             )}
                             <div className="mt-1">

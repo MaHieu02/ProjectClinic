@@ -6,7 +6,7 @@ export const getPatientByUserId = async (req, res) => {
         const { userId } = req.params;
 
         const patient = await Patient.findOne({ user_id: userId })
-            .populate('user_id', 'full_name phone email dob address gender');
+            .populate('user_id', 'full_name phone email dob address gender username');
         
         if (!patient) {
             return res.status(404).json({
@@ -71,7 +71,7 @@ export const createPatient = async (req, res) => {
 
         await patient.save();
 
-        await patient.populate('user_id', 'full_name phone email dob address gender');
+        await patient.populate('user_id', 'full_name phone email dob address gender username');
 
         res.status(201).json({
             success: true,
@@ -128,7 +128,7 @@ export const getPatients = async (req, res) => {
         }
 
         const patients = await Patient.find(query)
-            .populate('user_id', 'full_name phone email dob address gender')
+            .populate('user_id', 'full_name phone email dob address gender username')
             .skip(skip)
             .limit(parseInt(limit))
             .sort({ createdAt: -1 });
@@ -163,7 +163,7 @@ export const getPatientById = async (req, res) => {
         const { id } = req.params;
 
         const patient = await Patient.findById(id)
-            .populate('user_id', 'full_name phone email dob address gender');
+            .populate('user_id', 'full_name phone email dob address gender username');
 
         if (!patient) {
             return res.status(404).json({
@@ -216,7 +216,7 @@ export const updatePatient = async (req, res) => {
             id,
             updateData,
             { new: true, runValidators: true }
-        ).populate('user_id', 'full_name phone email dob address gender');
+        ).populate('user_id', 'full_name phone email dob address gender username');
 
         res.status(200).json({
             success: true,

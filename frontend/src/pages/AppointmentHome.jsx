@@ -755,7 +755,7 @@ const AppointmentHome = () => {
                         </div>
                         <div className="mt-3">
                           <p className="text-xs text-yellow-600">
-                            💡 Gợi ý: Thử tìm kiếm với từ khóa khác hoặc kiểm tra chính tả
+                            Gợi ý: Thử tìm kiếm với từ khóa khác hoặc kiểm tra chính tả
                           </p>
                         </div>
                       </div>
